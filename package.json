@@ -1,0 +1,14 @@
+{
+  "name": "security-operations-management",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Black Tiger Security control room admin dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "leaflet": "^1.9.4"
+  }
+}

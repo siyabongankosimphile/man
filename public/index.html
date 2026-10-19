@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Black Tiger Security · Control Room</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e0a100'/%3E%3Ccircle cx='32' cy='34' r='12' fill='%2314161a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <form id="login-form" class="login-card">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#14181d"/>
+          <circle cx="32" cy="32" r="28" fill="#e0a100"/>
+          <path d="M16 27 22 12l7 12zM48 27 42 12l-7 12z" fill="#1a1d22"/>
+          <ellipse cx="32" cy="35" rx="15" ry="13" fill="#f3d48a"/>
+          <ellipse cx="26" cy="34" rx="2" ry="2.3" fill="#1a1d22"/>
+          <ellipse cx="38" cy="34" rx="2" ry="2.3" fill="#1a1d22"/>
+        </svg>
+        <div>
+          <div class="brand-name">BLACK TIGER <span>SECURITY</span></div>
+          <div class="brand-slogan">Control room · Desktop</div>
+        </div>
+      </div>
+      <h2>Admin sign-in</h2>
+      <p>The desk is for control-room administrators. Responders and clients use their own apps.</p>
+      <label for="login-username">Username</label>
+      <input id="login-username" name="username" autocomplete="username" required>
+      <label for="login-password">Password</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+      <p id="login-error" class="modal-error" hidden></p>
+      <button type="submit" class="btn-primary">Sign in</button>
+      <p class="login-hint">Sample admin: <strong>thandi</strong> / <strong>tiger</strong></p>
+      <p class="login-links"><a href="/portal">Responder app</a><a href="/client">Client app</a></p>
+    </form>
+  </div>
+  <div class="shell" id="shell" hidden>
+    <header class="topbar">
+      <button type="button" class="menu-btn" id="menu-btn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#14181d"/>
+          <circle cx="32" cy="32" r="28" fill="#e0a100"/>
+          <path d="M16 27 22 12l7 12zM48 27 42 12l-7 12z" fill="#1a1d22"/>
+          <ellipse cx="32" cy="35" rx="15" ry="13" fill="#f3d48a"/>
+          <path d="M24 24c2 3 2 6 0 8M40 24c-2 3-2 6 0 8M32 18v7" stroke="#1a1d22" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <ellipse cx="26" cy="34" rx="2" ry="2.3" fill="#1a1d22"/>
+          <ellipse cx="38" cy="34" rx="2" ry="2.3" fill="#1a1d22"/>
+          <path d="M32 37.5 35 41h-6z" fill="#1a1d22"/>
+          <path d="M27 42c2 2 8 2 10 0" stroke="#1a1d22" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="brand-name">BLACK TIGER <span>SECURITY</span></div>
+          <div class="brand-slogan">Always Watching • Always Ready</div>
+        </div>
+      </div>
+      <div class="title-block">
+        <h1 id="page-title">CONTROL ROOM DASHBOARD</h1>
+        <p id="page-subtitle">Monitoring | Dispatch | Protecting</p>
+      </div>
+      <div class="top-meta">
+        <div class="clock">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 8v4.5l3 2"/></svg>
+          <div>
+            <strong id="clock-time">--:--</strong>
+            <span id="clock-date">Loading date</span>
+          </div>
+        </div>
+        <div class="room-status">
+          <span id="room-dot" class="dot"></span>
+          <div>
+            <strong id="room-label">Control Room Online</strong>
+            <span id="room-place">Nelspruit</span>
+          </div>
+        </div>
+        <div class="operator">
+          <button type="button" id="operator-btn" class="operator-btn">
+            <span class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" d="M6.5 18.5c1.2-2.4 3.1-3.5 5.5-3.5s4.3 1.1 5.5 3.5"/></svg>
+            </span>
+            <span>
+              <strong id="operator-name">Thandi Mokoena</strong>
+              <span id="operator-role">Operator</span>
+            </span>
+            <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="m7 10 5 5 5-5"/></svg>
+          </button>
+          <div id="operator-menu" class="menu" hidden>
+            <strong id="menu-name">Thandi Mokoena</strong>
+            <span id="menu-role">Control room operator · Nelspruit</span>
+            <button type="button" id="sign-out" class="btn-ghost">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <nav aria-label="Control room">
+        <button type="button" class="nav-item is-active" data-nav="dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>
+          Dashboard
+        </button>
+        <button type="button" class="nav-item" data-nav="alarms">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a6 6 0 0 0-6 6v3.2L4 16h16l-2-3.8V9a6 6 0 0 0-6-6zm0 18a2.4 2.4 0 0 0 2.3-1.8H9.7A2.4 2.4 0 0 0 12 21z"/></svg>
+          Alarms &amp; Events
+          <span class="nav-badge" id="alarm-badge" hidden>0</span>
+        </button>
+        <button type="button" class="nav-item" data-nav="clients">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.5 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm7 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15.5 11zM3 18.5c.4-2.6 2.6-4 5.5-4s5.1 1.4 5.5 4v.5H3zm10.2-3.7c1.6.3 2.8 1.2 3.4 2.7.3.7.4 1.4.4 2v.5H21v-.6c-.3-2.2-2-3.8-4.6-4.3-.9-.2-1.8-.2-2.2-.3z"/></svg>
+          Clients
+        </button>
+        <button type="button" class="nav-item" data-nav="responders">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 15v2h1.2a2.4 2.4 0 0 0 4.6 0h4.4a2.4 2.4 0 0 0 4.6 0H20v-4.2L17.6 8A2 2 0 0 0 15.8 7H8.4A2 2 0 0 0 6.6 8L4 12.2zm3.5 2.2a1 1 0 1 1 1-1 1 1 0 0 1-1 1zm9 0a1 1 0 1 1 1-1 1 1 0 0 1-1 1zM7.2 12l1-2.2h7.7L17 12z"/></svg>
+          Responders
+        </button>
+        <button type="button" class="nav-item" data-nav="map">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9 4 6 2 5-2v14l-5 2-6-2-5 2V6zm0 2.2v9.7l6 2V8.2z"/></svg>
+          Live Map
+        </button>
+        <button type="button" class="nav-item" data-nav="incidents">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3h8l4 4v14H7zm8 1.5V8h3.5zM9 12h8v1.6H9zm0 3.2h8V17H9z"/></svg>
+          Incidents
+        </button>
+        <button type="button" class="nav-item" data-nav="reports">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 19V9h3v10zm5.5 0V5h3v14zm5.5 0v-7H19v7z"/></svg>
+          Reports
+        </button>
+        <button type="button" class="nav-item" data-nav="communication">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 5h14v10H8l-3 3z"/></svg>
+          Communication
+        </button>
+        <button type="button" class="nav-item" data-nav="settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.2 3h3.6l.4 2.1a7 7 0 0 1 1.7 1l2-1 2.5 2.5-1 2a7 7 0 0 1 1 1.7l2.1.4v3.6l-2.1.4a7 7 0 0 1-1 1.7l1 2-2.5 2.5-2-1a7 7 0 0 1-1.7 1L13.8 21h-3.6l-.4-2.1a7 7 0 0 1-1.7-1l-2 1-2.5-2.5 1-2a7 7 0 0 1-1-1.7L2 13.8v-3.6l2.1-.4a7 7 0 0 1 1-1.7l-1-2L6.6 4l2 1a7 7 0 0 1 1.7-1zm1.8 6.2A2.8 2.8 0 1 0 14.8 12 2.8 2.8 0 0 0 12 9.2z"/></svg>
+          Settings
+        </button>
+      </nav>
+      <div class="powered">
+        <span>Powered by</span>
+        <div class="fs">
+          <strong>FS</strong>
+          <div>
+            <b>Kayise IT</b>
+            <small>Smarter solutions. Safer communities.</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <main id="view" class="view" aria-live="polite">
+        <p class="loading">Opening the control room…</p>
+      </main>
+      <footer class="foot">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 5 6v6c0 4.2 2.8 7.2 7 8.5 4.2-1.3 7-4.3 7-8.5V6z"/></svg> Black Tiger Security | Control Room Operations</span>
+        <span>Your Safety • Our Priority</span>
+      </footer>
+    </div>
+  </div>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-card">
+      <h3 id="modal-title">Details</h3>
+      <div id="modal-copy"></div>
+      <label id="modal-label" for="modal-input">Reason</label>
+      <textarea id="modal-input" rows="3" maxlength="400"></textarea>
+      <p id="modal-error" class="modal-error" hidden></p>
+      <div class="modal-actions">
+        <button type="button" id="modal-cancel">Cancel</button>
+        <button type="button" id="modal-ok" class="btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
