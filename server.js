@@ -104,6 +104,8 @@ app.post("/api/reset", (req, res) => {
   res.json({ ok: true, message: result.message, dashboard: store.getDashboard() });
 });
 
+app.use("/api/matsulu", require("./api/matsulu"));
+
 function sendField(res, responderId, result) {
   if (result.error) {
     return res.status(result.status).json({ ok: false, error: result.error });
